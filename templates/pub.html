@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨金博客 · 发布文章</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="index.html" id="nav-home">首页</a>
+                <a href="pub.html" id="nav-publish" class="active">发布</a>
+                <a href="profile.html" id="nav-profile">个人主页</a>
+                <a href="login.html" id="nav-login">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay">
+                <span>👤</span> 墨客
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="publish-container">
+            <div class="publish-card">
+                <h2>发布新文章</h2>
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" placeholder="给你的文章起个名字" value="墨金设计语言">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>分类</label>
+                        <input type="text" placeholder="设计 / 技术 / 思考" value="设计哲学">
+                    </div>
+                    <div class="form-group">
+                        <label>封面图 (URL)</label>
+                        <input type="text" placeholder="可选" value="✧">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>标签</label>
+                    <div class="tag-input">
+                        <span class="tag" onclick="this.remove()">深色模式 ✕</span>
+                        <span class="tag" onclick="this.remove()">金色 ✕</span>
+                        <span class="tag" onclick="this.remove()">UI ✕</span>
+                        <input type="text" placeholder="添加标签..." class="tag-input-field" onkeypress="if(event.key==='Enter'){addTag(this);}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>正文</label>
+                    <div class="editor-toolbar">
+                        <span>B</span> <span>I</span> <span>U</span> <span>🔗</span> <span>🖼️</span> <span>#</span>
+                    </div>
+                    <textarea rows="10" placeholder="写点东西吧……" style="border-radius: 0 0 8px 8px; resize: vertical;">在深色背景上使用金色点缀，需要足够的对比度和留白。墨金风格强调克制与质感，每一个金色元素都应该有它的理由。</textarea>
+                </div>
+                <div class="publish-actions">
+                    <button class="btn btn-outline" onclick="handleSaveDraft()">保存草稿</button>
+                    <button class="btn btn-gold" onclick="handlePublish()">发布</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

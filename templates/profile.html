@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨金博客 · 个人主页</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="index.html" id="nav-home">首页</a>
+                <a href="pub.html" id="nav-publish">发布</a>
+                <a href="profile.html" id="nav-profile" class="active">个人主页</a>
+                <a href="login.html" id="nav-login">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay">
+                <span>👤</span> 墨客
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="profile-container">
+            <!-- 个人资料头部 -->
+            <div class="profile-header">
+                <div class="profile-avatar">✧</div>
+                <div class="profile-info">
+                    <div class="profile-name">墨客 <span style="color: var(--gold);">· 博主</span></div>
+                    <div class="profile-bio">设计 & 代码爱好者，专注深色界面与质感细节。墨金博客主理人。</div>
+                    <div class="profile-stats">
+                        <div class="stat-item"><span class="stat-value">12</span> <span class="stat-label">文章</span></div>
+                        <div class="stat-item"><span class="stat-value">348</span> <span class="stat-label">订阅</span></div>
+                        <div class="stat-item"><span class="stat-value">6</span> <span class="stat-label">系列</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 标签页 -->
+            <div class="profile-tabs">
+                <button class="tab-btn active-tab" onclick="alert('我的文章')">我的文章</button>
+                <button class="tab-btn" onclick="alert('收藏夹')">收藏夹</button>
+                <button class="tab-btn" onclick="alert('设置')">设置</button>
+            </div>
+
+            <!-- 文章列表 -->
+            <div class="my-posts">
+                <div class="post-item" onclick="viewPost('暗色主题的优雅')">
+                    <div class="post-info">
+                        <h4>暗色主题的优雅</h4>
+                        <span class="post-date">2025-03-12 · 设计哲学</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="edit-btn" onclick="editPost(event, '暗色主题的优雅')">✎ 编辑</button>
+                        <button class="delete-btn" onclick="deletePost(event, '暗色主题的优雅')">🗑️ 删除</button>
+                    </div>
+                </div>
+                <div class="post-item" onclick="viewPost('金色细节的力量')">
+                    <div class="post-info">
+                        <h4>金色细节的力量</h4>
+                        <span class="post-date">2025-03-05 · UI设计</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="edit-btn" onclick="editPost(event, '金色细节的力量')">✎ 编辑</button>
+                        <button class="delete-btn" onclick="deletePost(event, '金色细节的力量')">🗑️ 删除</button>
+                    </div>
+                </div>
+                <div class="post-item" onclick="viewPost('博客重构笔记')">
+                    <div class="post-info">
+                        <h4>博客重构笔记</h4>
+                        <span class="post-date">2025-02-28 · 开发</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="edit-btn" onclick="editPost(event, '博客重构笔记')">✎ 编辑</button>
+                        <button class="delete-btn" onclick="deletePost(event, '博客重构笔记')">🗑️ 删除</button>
+                    </div>
+                </div>
+                <div class="post-item" onclick="viewPost('深色模式设计指南')">
+                    <div class="post-info">
+                        <h4>深色模式设计指南</h4>
+                        <span class="post-date">2025-02-20 · 设计</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="edit-btn" onclick="editPost(event, '深色模式设计指南')">✎ 编辑</button>
+                        <button class="delete-btn" onclick="deletePost(event, '深色模式设计指南')">🗑️ 删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

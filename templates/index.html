@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨金博客 · 首页</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="index.html" id="nav-home" class="active">首页</a>
+                <a href="pub.html" id="nav-publish">发布</a>
+                <a href="profile.html" id="nav-profile">个人主页</a>
+                <a href="login.html" id="nav-login">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay">
+                <span>👤</span> 墨客
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero 大横幅 -->
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">✦ 深度思考</div>
+                <h1>墨金之间，<br><span class="hero-highlight">洞见</span>未来</h1>
+                <p>分享技术、设计与哲学。简洁的文字，深邃的思想。</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-gold" onclick="window.location.href='publish.html'">开始写作</button>
+                    <button class="btn btn-outline" onclick="window.location.href='profile.html'">我的主页</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <span>✧</span>
+            </div>
+        </div>
+
+        <!-- 精选文章 -->
+        <h2 class="section-title">精选文章</h2>
+        <div class="featured-grid">
+            <div class="post-card" onclick="viewPost('暗色主题的优雅')">
+                <div class="post-image">📘</div>
+                <div class="post-content">
+                    <div class="post-meta"><span>设计哲学</span><span>5分钟</span></div>
+                    <h3>暗色主题的优雅</h3>
+                    <p>探讨深色界面如何提升沉浸感，结合金色细节点缀，营造高级感……</p>
+                    <span class="read-more">阅读全文 →</span>
+                </div>
+            </div>
+            <div class="post-card" onclick="viewPost('金色细节的力量')">
+                <div class="post-image">✨</div>
+                <div class="post-content">
+                    <div class="post-meta"><span>UI 设计</span><span>4分钟</span></div>
+                    <h3>金色细节的力量</h3>
+                    <p>克制地使用金色作为强调色，如何在深色背景中脱颖而出又不显浮夸……</p>
+                    <span class="read-more">阅读全文 →</span>
+                </div>
+            </div>
+            <div class="post-card" onclick="viewPost('博客重构笔记')">
+                <div class="post-image">✍️</div>
+                <div class="post-content">
+                    <div class="post-meta"><span>开发</span><span>6分钟</span></div>
+                    <h3>博客重构笔记</h3>
+                    <p>从零搭建一个深灰与金的博客系统，记录设计思路与交互细节……</p>
+                    <span class="read-more">阅读全文 →</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

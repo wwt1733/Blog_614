@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨金博客 · 登录</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="index.html" id="nav-home">首页</a>
+                <a href="pub.html" id="nav-publish">发布</a>
+                <a href="profile.html" id="nav-profile">个人主页</a>
+                <a href="login.html" id="nav-login" class="active">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay" style="display: none;">
+                <span>👤</span> 访客
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="login-container">
+            <div class="login-card">
+                <h2>登录墨金</h2>
+                <div class="login-sub">使用你的账号继续</div>
+                <div class="input-group">
+                    <input type="text" placeholder="用户名 / 邮箱" id="username" value="demo@blog.com">
+                </div>
+                <div class="input-group">
+                    <input type="password" placeholder="密码" id="password" value="123456">
+                </div>
+                <div class="login-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" checked> 记住我
+                    </label>
+                    <a href="#" class="forgot-link">忘记密码?</a>
+                </div>
+                <button class="btn login-btn" onclick="handleLogin()">进入博客</button>
+                <div class="register-link">
+                    没有账号？ <a href="#">立即注册</a> (演示)
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
