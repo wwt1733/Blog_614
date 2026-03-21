@@ -1,12 +1,12 @@
-from flask import Flask, render_template
-
+from flask import Flask,request,redirect,url_for,render_template
+import config
+from exts import db,migrate
+import models
 app = Flask(__name__)
+app.config.from_object(config)
 
-
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
+db.init_app(app)
+migrate.init_app(app,db)
 @app.route('/index')
 def index():
     return render_template('index.html')
