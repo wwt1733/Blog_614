@@ -12,10 +12,10 @@
         <div class="container nav-container">
             <div class="logo"><a href="index.html">墨金·博</a></div>
             <div class="nav-links">
-                <a href="index.html" id="nav-home">首页</a>
-                <a href="pub.html" id="nav-publish">发布</a>
-                <a href="profile.html" id="nav-profile">个人主页</a>
-                <a href="login.html" id="nav-login" class="active">登录</a>
+                <a href="/" id="nav-home">首页</a>
+                <a href="/pub" id="nav-publish">发布</a>
+                <a href="/profile" id="nav-profile">个人主页</a>
+                <a href="/login" id="nav-login" class="active">登录</a>
             </div>
             <div class="user-tag" id="userDisplay" style="display: none;">
                 <span>👤</span> 访客
@@ -42,7 +42,7 @@
                 </div>
                 <button class="btn login-btn" onclick="handleLogin()">进入博客</button>
                 <div class="register-link">
-                    没有账号？ <a href="#">立即注册</a> (演示)
+                    还没有账号？ <a href="/register">立即注册</a>
                 </div>
             </div>
         </div>
@@ -55,5 +55,27 @@
     </footer>
 
     <script src="/static/js/main.js"></script>
+    <script>
+    // 检查是否从注册页跳转过来
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('registered') === 'true') {
+        // 显示注册成功的提示
+        alert('注册成功！请使用你的账号登录');
+    }
+
+    // 登录成功后跳转到首页
+    function handleLogin() {
+        // ... 登录逻辑保持不变
+        if (user) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('currentUser', JSON.stringify({
+                username: user.username,
+                avatar: user.avatar
+            }));
+            alert(`欢迎回来，${user.username}！`);
+            window.location.href = '/';  // 改为跳转到根路径
+        }
+    }
+    </script>
 </body>
 </html>

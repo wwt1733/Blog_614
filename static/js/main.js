@@ -23,20 +23,40 @@ function setActiveNav(currentPage) {
 
     // 根据当前页面激活对应的导航链接
     switch(currentPage) {
+        case '':
+        case '/':
         case 'index.html':
+        case 'index':
             document.getElementById('nav-home')?.classList.add('active');
             break;
         case 'login.html':
+        case 'login':
             document.getElementById('nav-login')?.classList.add('active');
             break;
         case 'publish.html':
+        case 'publish':
             document.getElementById('nav-publish')?.classList.add('active');
             break;
         case 'profile.html':
+        case 'profile':
             document.getElementById('nav-profile')?.classList.add('active');
             break;
     }
 }
+
+// 在页面加载时调用
+document.addEventListener('DOMContentLoaded', function() {
+    // 获取当前路径（去掉开头的斜杠）
+    let path = window.location.pathname;
+    if (path.startsWith('/')) {
+        path = path.substring(1);
+    }
+    const page = path || 'index';
+
+    setActiveNav(page);
+    checkLoginStatus();
+    setupConfirmButtons();
+});
 
 // 检查登录状态（模拟）
 function checkLoginStatus() {
@@ -61,20 +81,79 @@ function checkLoginStatus() {
 
 // 处理登录
 function handleLogin() {
-    // 模拟登录成功
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('username', '墨客');
-    alert('登录成功！');
-    window.location.href = 'index.html';
+    const username = document.getElementById('username')?.value;
+    const password = document.getElementById('password')?.value;
+
+    if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+    }
+
+    // 获取用户列表
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    // 查找用户
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (user) {
+        // 登录成功
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: user.username,
+            avatar: user.avatar
+        }));
+        alert(`欢迎回来，${user.username}！`);
+        window.location.href = 'index.html';
+    } else {
+        // 登录失败
+        const userExists = users.some(u => u.username === username);
+        if (userExists) {
+            alert('密码错误，请重试');
+        } else {
+            alert('用户名不存在，请先注册');
+        }
+    }
 }
 
-// 处理登出
+// 获取当前登录用户信息
+function getCurrentUser() {
+    const userStr = localStorage.getItem('currentUser');
+    if (userStr) {
+        return JSON.parse(userStr);
+    }
+    return null;
+}
+
+// 更新用户显示
+function updateUserDisplay() {
+    const userDisplay = document.getElementById('userDisplay');
+    const currentUser = getCurrentUser();
+
+    if (userDisplay && currentUser) {
+        if (currentUser.avatar) {
+            userDisplay.innerHTML = `<img src="${currentUser.avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"> ${currentUser.username}`;
+        } else {
+            userDisplay.innerHTML = `<span>👤</span> ${currentUser.username}`;
+        }
+        userDisplay.style.display = 'flex';
+    } else if (userDisplay) {
+        userDisplay.style.display = 'none';
+    }
+}
+
+// 退出登录
 function handleLogout() {
     localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('username');
+    localStorage.removeItem('currentUser');
     alert('已退出登录');
     window.location.href = 'login.html';
 }
+
+// 在页面加载时更新用户显示
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserDisplay();
+    // ... 其他初始化代码
+});
 
 // 处理发布文章
 function handlePublish() {
