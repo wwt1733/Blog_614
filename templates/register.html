@@ -292,36 +292,33 @@
             return isValid;
         }
 
-        // 检查用户名是否已存在
-        function isUsernameExists(username) {
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            return users.some(user => user.username === username);
-        }
 
-        // 注册用户
-        function registerUser(username, password, avatar) {
-            // 获取现有用户列表
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-            // 检查重复
-            if (isUsernameExists(username)) {
-                showError(usernameError, '用户名已存在，请选择其他用户名');
-                return false;
+
+        // 注册用户 - 调用后端API
+        async function registerUser(username, password, avatar) {
+            try {
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+                if (avatar) {
+                    formData.append('avatar', avatar);
+                }
+
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('注册失败:', error);
+                return { result: false, msg: '网络错误，请稍后重试' };
             }
-
-            // 创建新用户
-            const newUser = {
-                id: Date.now(),
-                username: username,
-                password: password, // 实际应用中应该加密，这里仅为演示
-                avatar: avatar || null,
-                createdAt: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-
-            return true;
         }
 
         // 处理表单提交
@@ -335,23 +332,28 @@
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
 
-            // 注册用户
-            const success = registerUser(username, password, selectedAvatar);
+            // 禁用提交按钮
+            const submitBtn = form.querySelector('.login-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '注册中...';
 
-            if (success) {
+            // 调用后端API注册
+            const result = await registerUser(username, password, selectedAvatar);
+
+            if (result.result) {
                 // 显示成功消息
                 successMessage.classList.add('show');
-
-                // 禁用提交按钮，防止重复提交
-                const submitBtn = form.querySelector('.login-btn');
-                submitBtn.disabled = true;
                 submitBtn.textContent = '注册成功，正在跳转...';
-                submitBtn.style.opacity = '0.6';
 
-                // 3秒后跳转到登录页
+                // 2秒后跳转到登录页
                 setTimeout(() => {
                     window.location.href = '/login?registered=true';
-                }, 3000);
+                }, 2000);
+            } else {
+                // 显示错误信息
+                showError(usernameError, result.msg || '注册失败，请重试');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '注册新账号';
             }
         });
 

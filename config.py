@@ -1,3 +1,6 @@
+SECRET_KEY = 'dfdsfdfkj3434'
+
+
 SQLALCHEMY_DATABASE_URI = 'sqlite:///mydatabase.db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True

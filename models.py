@@ -10,6 +10,7 @@ class User(db.Model):
     id : Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     username : Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     _password : Mapped[str] = mapped_column(String(200), nullable=False)
+    avatar: Mapped[str] = mapped_column(String(500), nullable=True)
 
     blogs : Mapped["Blog"] = relationship("Blog", back_populates="publisher")
 

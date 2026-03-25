@@ -59,21 +59,45 @@
     // 检查是否从注册页跳转过来
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('registered') === 'true') {
-        // 显示注册成功的提示
         alert('注册成功！请使用你的账号登录');
     }
 
-    // 登录成功后跳转到首页
-    function handleLogin() {
-        // ... 登录逻辑保持不变
-        if (user) {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('currentUser', JSON.stringify({
-                username: user.username,
-                avatar: user.avatar
-            }));
-            alert(`欢迎回来，${user.username}！`);
-            window.location.href = '/';  // 改为跳转到根路径
+    // 登录函数 - 调用后端API
+    async function handleLogin() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const remember = document.querySelector('input[type="checkbox"]').checked;
+
+        if (!username || !password) {
+            alert('请输入用户名和密码');
+            return;
+        }
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('remember', remember);
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData
+            });
+
+        const data = await response.json();
+
+        if (data.result) {
+            alert(`欢迎回来，${data.user.username}！`);
+            window.location.href = '/index';  // 跳转到首页
+        } else {
+            alert(data.msg || '登录失败，请检查用户名和密码');
+        }
+        } catch (error) {
+        console.error('登录失败:', error);
+        alert('网络错误，请稍后重试');
         }
     }
     </script>

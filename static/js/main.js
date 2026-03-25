@@ -14,70 +14,94 @@ document.addEventListener('DOMContentLoaded', function() {
     setupConfirmButtons();
 });
 
-// 设置导航栏激活状态
-function setActiveNav(currentPage) {
-    // 移除所有导航链接的active类
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.classList.remove('active');
-    });
 
-    // 根据当前页面激活对应的导航链接
-    switch(currentPage) {
-        case '':
-        case '/':
-        case 'index.html':
-        case 'index':
-            document.getElementById('nav-home')?.classList.add('active');
-            break;
-        case 'login.html':
-        case 'login':
-            document.getElementById('nav-login')?.classList.add('active');
-            break;
-        case 'publish.html':
-        case 'publish':
-            document.getElementById('nav-publish')?.classList.add('active');
-            break;
-        case 'profile.html':
-        case 'profile':
-            document.getElementById('nav-profile')?.classList.add('active');
-            break;
-    }
-}
+        // 检查登录状态 - 调用后端API
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/current_user');
+                const data = await response.json();
 
-// 在页面加载时调用
-document.addEventListener('DOMContentLoaded', function() {
-    // 获取当前路径（去掉开头的斜杠）
-    let path = window.location.pathname;
-    if (path.startsWith('/')) {
-        path = path.substring(1);
-    }
-    const page = path || 'index';
+                const userDisplay = document.getElementById('userDisplay');
 
-    setActiveNav(page);
-    checkLoginStatus();
-    setupConfirmButtons();
-});
+                if (data.is_logged_in && userDisplay) {
+                    // 已登录，显示用户信息
+                    if (data.user.avatar) {
+                        userDisplay.innerHTML = `<img src="${data.user.avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 8px;"> ${data.user.username}`;
+                    } else {
+                        userDisplay.innerHTML = `<span>👤</span> ${data.user.username}`;
+                    }
+                    userDisplay.style.display = 'flex';
+                    userDisplay.style.cursor = 'pointer';
 
-// 检查登录状态（模拟）
-function checkLoginStatus() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const userDisplay = document.getElementById('userDisplay');
-
-    if (userDisplay) {
-        if (isLoggedIn) {
-            userDisplay.style.display = 'flex';
-        } else {
-            // 如果在非登录页面且未登录，显示访客模式
-            const currentPage = window.location.pathname.split('/').pop();
-            if (currentPage !== 'login.html') {
-                userDisplay.style.display = 'flex';
-                userDisplay.innerHTML = '<span>👤</span> 访客';
-            } else {
-                userDisplay.style.display = 'none';
+                    // 添加点击退出功能（可选）
+                    userDisplay.onclick = () => {
+                        if (confirm('确定要退出登录吗？')) {
+                            window.location.href = '/logout';
+                        }
+                    };
+                } else if (userDisplay) {
+                    // 未登录
+                    const currentPage = window.location.pathname;
+                    if (!currentPage.includes('login') && !currentPage.includes('register')) {
+                        userDisplay.innerHTML = '<span>👤</span> 访客';
+                        userDisplay.style.display = 'flex';
+                        userDisplay.style.cursor = 'pointer';
+                        userDisplay.onclick = () => {
+                            window.location.href = '/login';
+                        };
+                    } else {
+                        userDisplay.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('检查登录状态失败:', error);
             }
         }
-    }
-}
+
+        // 删除原有的 getCurrentUser 和 updateUserDisplay 函数
+        // 因为现在直接从后端获取用户信息
+
+        // 更新导航栏激活状态（修改一下）
+        function setActiveNav(currentPage) {
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            switch(currentPage) {
+                case '':
+                case '/':
+                case 'index':
+                case 'index.html':
+                    document.getElementById('nav-home')?.classList.add('active');
+                    break;
+                case 'login':
+                case 'login.html':
+                    document.getElementById('nav-login')?.classList.add('active');
+                    break;
+                case 'pub':
+                case 'publish.html':
+                    document.getElementById('nav-publish')?.classList.add('active');
+                    break;
+                case 'profile':
+                case 'profile.html':
+                    document.getElementById('nav-profile')?.classList.add('active');
+                    break;
+            }
+        }
+
+        // 修改 DOMContentLoaded 事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取当前路径
+            let path = window.location.pathname;
+            if (path.startsWith('/')) {
+                path = path.substring(1);
+            }
+            const page = path || 'index';
+
+            setActiveNav(page);
+            checkLoginStatus();
+            setupConfirmButtons();
+        });
 
 // 处理登录
 function handleLogin() {
@@ -115,31 +139,9 @@ function handleLogin() {
     }
 }
 
-// 获取当前登录用户信息
-function getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser');
-    if (userStr) {
-        return JSON.parse(userStr);
-    }
-    return null;
-}
 
-// 更新用户显示
-function updateUserDisplay() {
-    const userDisplay = document.getElementById('userDisplay');
-    const currentUser = getCurrentUser();
 
-    if (userDisplay && currentUser) {
-        if (currentUser.avatar) {
-            userDisplay.innerHTML = `<img src="${currentUser.avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"> ${currentUser.username}`;
-        } else {
-            userDisplay.innerHTML = `<span>👤</span> ${currentUser.username}`;
-        }
-        userDisplay.style.display = 'flex';
-    } else if (userDisplay) {
-        userDisplay.style.display = 'none';
-    }
-}
+
 
 // 退出登录
 function handleLogout() {
