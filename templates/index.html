@@ -10,9 +10,9 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container nav-container">
-            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="logo"><a href="/index">墨金·博</a></div>
             <div class="nav-links">
-                <a href="/" id="nav-home" class="active">首页</a>
+                <a href="/index" id="nav-home" class="active">首页</a>
                 <a href="/pub" id="nav-publish">发布</a>
                 <a href="/profile" id="nav-profile">个人主页</a>
                 <a href="/login" id="nav-login">登录</a>
@@ -31,8 +31,8 @@
                 <h1>墨金之间，<br><span class="hero-highlight">洞见</span>未来</h1>
                 <p>分享技术、设计与哲学。简洁的文字，深邃的思想。</p>
                 <div class="hero-buttons">
-                    <button class="btn btn-gold" onclick="window.location.href='publish.html'">开始写作</button>
-                    <button class="btn btn-outline" onclick="window.location.href='profile.html'">我的主页</button>
+                    <button class="btn btn-gold" onclick="window.location.href='/pub'">开始写作</button>
+                    <button class="btn btn-outline" onclick="window.location.href='/profile'">我的主页</button>
                 </div>
             </div>
             <div class="hero-image">
@@ -79,6 +79,6 @@
         </div>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

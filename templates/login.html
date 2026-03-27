@@ -10,9 +10,9 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container nav-container">
-            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="logo"><a href="/index">墨金·博</a></div>
             <div class="nav-links">
-                <a href="/" id="nav-home">首页</a>
+                <a href="/index" id="nav-home">首页</a>
                 <a href="/pub" id="nav-publish">发布</a>
                 <a href="/profile" id="nav-profile">个人主页</a>
                 <a href="/login" id="nav-login" class="active">登录</a>
@@ -29,10 +29,10 @@
                 <h2>登录墨金</h2>
                 <div class="login-sub">使用你的账号继续</div>
                 <div class="input-group">
-                    <input type="text" placeholder="用户名 / 邮箱" id="username" value="demo@blog.com">
+                    <input type="text" placeholder="用户名 / 邮箱" id="username">
                 </div>
                 <div class="input-group">
-                    <input type="password" placeholder="密码" id="password" value="123456">
+                    <input type="password" placeholder="密码" id="password">
                 </div>
                 <div class="login-options">
                     <label class="checkbox-label">
@@ -54,7 +54,7 @@
         </div>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script type="module" src="/static/js/main.js"></script>
     <script>
     // 检查是否从注册页跳转过来
     const urlParams = new URLSearchParams(window.location.search);

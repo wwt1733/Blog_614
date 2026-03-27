@@ -5,20 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>墨金博客 · 发布文章</title>
     <link rel="stylesheet" href="/static/css/Blog_css.css">
+    <style>
+        /* 发布页额外样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .publish-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-gold {
+            background-color: var(--gold);
+            color: #1a1a1a;
+        }
+
+        .btn-gold:hover {
+            background-color: #e6b422;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            color: #51cf66;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            background-color: rgba(81, 207, 102, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container nav-container">
-            <div class="logo"><a href="index.html">墨金·博</a></div>
+            <div class="logo"><a href="/index">墨金·博</a></div>
             <div class="nav-links">
-                <a href="/" id="nav-home">首页</a>
+                <a href="/index" id="nav-home">首页</a>
                 <a href="/pub" id="nav-publish" class="active">发布</a>
                 <a href="/profile" id="nav-profile">个人主页</a>
                 <a href="/login" id="nav-login">登录</a>
             </div>
-            <div class="user-tag" id="userDisplay">
-                <span>👤</span> 墨客
+            <div class="user-tag" id="userDisplay" style="display: none;">
+                <span>👤</span> 访客
             </div>
         </div>
     </nav>
@@ -27,40 +119,49 @@
         <div class="publish-container">
             <div class="publish-card">
                 <h2>发布新文章</h2>
-                <div class="form-group">
-                    <label>标题</label>
-                    <input type="text" placeholder="给你的文章起个名字" value="墨金设计语言">
-                </div>
-                <div class="form-row">
+                <div class="login-sub">分享你的思考和见解</div>
+
+                <form id="publishForm">
+                    <!-- 标题 -->
                     <div class="form-group">
-                        <label>分类</label>
-                        <input type="text" placeholder="设计 / 技术 / 思考" value="设计哲学">
+                        <label>标题 *</label>
+                        <input type="text" id="title" placeholder="给你的文章起个名字" autocomplete="off">
+                        <div class="error-message" id="titleError"></div>
                     </div>
+
+                    <div class="form-row">
+                        <!-- 分类 -->
+                        <div class="form-group">
+                            <label>分类 *</label>
+                            <input type="text" id="category" placeholder="设计 / 技术 / 思考" autocomplete="off">
+                            <div class="error-message" id="categoryError"></div>
+                        </div>
+
+                        <!-- 封面图 (URL) -->
+                        <div class="form-group">
+                            <label>封面图 (URL)</label>
+                            <input type="text" id="picture" placeholder="可选，输入图片链接">
+                            <div class="error-message" id="pictureError"></div>
+                        </div>
+                    </div>
+
+                    <!-- 正文 -->
                     <div class="form-group">
-                        <label>封面图 (URL)</label>
-                        <input type="text" placeholder="可选" value="✧">
+                        <label>正文 *</label>
+                        <textarea rows="12" id="content" placeholder="写点东西吧……" style="resize: vertical;"></textarea>
+                        <div class="error-message" id="contentError"></div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>标签</label>
-                    <div class="tag-input">
-                        <span class="tag" onclick="this.remove()">深色模式 ✕</span>
-                        <span class="tag" onclick="this.remove()">金色 ✕</span>
-                        <span class="tag" onclick="this.remove()">UI ✕</span>
-                        <input type="text" placeholder="添加标签..." class="tag-input-field" onkeypress="if(event.key==='Enter'){addTag(this);}">
+
+                    <!-- 提示信息 -->
+                    <div class="success-message" id="successMessage">
+                        ✓ 发布成功！正在跳转...
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>正文</label>
-                    <div class="editor-toolbar">
-                        <span>B</span> <span>I</span> <span>U</span> <span>🔗</span> <span>🖼️</span> <span>#</span>
+
+                    <div class="publish-actions">
+                        <button type="button" class="btn btn-outline" id="saveDraftBtn">保存草稿</button>
+                        <button type="submit" class="btn btn-gold">发布文章</button>
                     </div>
-                    <textarea rows="10" placeholder="写点东西吧……" style="border-radius: 0 0 8px 8px; resize: vertical;">在深色背景上使用金色点缀，需要足够的对比度和留白。墨金风格强调克制与质感，每一个金色元素都应该有它的理由。</textarea>
-                </div>
-                <div class="publish-actions">
-                    <button class="btn btn-outline" onclick="handleSaveDraft()">保存草稿</button>
-                    <button class="btn btn-gold" onclick="handlePublish()">发布</button>
-                </div>
+                </form>
             </div>
         </div>
     </main>
@@ -71,6 +172,6 @@
         </div>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
