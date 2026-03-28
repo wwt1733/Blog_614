@@ -405,8 +405,210 @@ function initPublishPage() {
 
 // 个人主页初始化
 function initProfilePage() {
-    // 个人主页的特定初始化逻辑
+    loadUserPosts();
+    loadUserInfo();
 }
+
+// 加载用户信息
+async function loadUserInfo() {
+    const { getCurrentUser } = await import('./modules/auth.js');
+    const data = await getCurrentUser();
+
+    if (data.is_logged_in) {
+        const profileName = document.getElementById('profileName');
+        const profileAvatar = document.getElementById('profileAvatar');
+
+        if (profileName) {
+            profileName.textContent = data.user.username;
+        }
+
+        if (profileAvatar) {
+            if (data.user.avatar) {
+                profileAvatar.innerHTML = `<img src="${data.user.avatar}" alt="头像">`;
+            } else {
+                profileAvatar.textContent = '✧';
+            }
+        }
+    }
+}
+
+// 加载用户文章
+async function loadUserPosts() {
+    const postsContainer = document.getElementById('postsContainer');
+
+    try {
+        const response = await fetch('/api/user/posts');
+        const data = await response.json();
+
+        if (!data.result) {
+            postsContainer.innerHTML = `<div class="empty-posts">${data.msg || '加载失败'}</div>`;
+            return;
+        }
+
+        const posts = data.posts;
+        const postCount = document.getElementById('postCount');
+        if (postCount) {
+            postCount.textContent = posts.length;
+        }
+
+        if (posts.length === 0) {
+            postsContainer.innerHTML = `
+                <div class="empty-posts">
+                    <p>还没有发布过文章</p>
+                    <a href="/pub" style="color: var(--gold);">去发布第一篇</a>
+                </div>
+            `;
+            return;
+        }
+
+        // 渲染文章列表
+        postsContainer.innerHTML = `
+            <div class="my-posts">
+                ${posts.map(post => `
+                    <div class="post-item" data-post-id="${post.id}">
+                        <div class="post-info">
+                            <h4>${escapeHtml(post.title)}</h4>
+                            <div class="post-date">${post.pub_date}</div>
+                        </div>
+                        <div class="post-actions">
+                            <button class="edit-btn" onclick="window.editPostById(${post.id})">✎ 编辑</button>
+                            <button class="delete-btn" onclick="window.deletePostById(${post.id}, '${escapeHtml(post.title)}')">🗑️ 删除</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+    } catch (error) {
+        console.error('加载文章失败:', error);
+        postsContainer.innerHTML = '<div class="empty-posts">加载失败，请刷新页面重试</div>';
+    }
+}
+
+// HTML 转义函数，防止 XSS 攻击
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// 编辑文章（全局函数）
+window.editPostById = async function(postId) {
+    try {
+        // 获取文章详情
+        const response = await fetch(`/api/post/${postId}`);
+        const data = await response.json();
+
+        if (data.result) {
+            // 填充表单
+            document.getElementById('editTitle').value = data.post.title;
+            document.getElementById('editCategory').value = data.post.category || '';
+            document.getElementById('editContent').value = data.post.content;
+
+            // 存储当前编辑的文章ID
+            window.currentEditPostId = postId;
+
+            // 显示模态框
+            document.getElementById('editModal').classList.add('show');
+        } else {
+            showMessage(data.msg || '获取文章失败', 'error');
+        }
+    } catch (error) {
+        console.error('获取文章失败:', error);
+        showMessage('网络错误，请稍后重试', 'error');
+    }
+};
+
+// 关闭编辑模态框
+window.closeEditModal = function() {
+    document.getElementById('editModal').classList.remove('show');
+    window.currentEditPostId = null;
+};
+
+// 保存编辑
+async function saveEditPost(event) {
+    event.preventDefault();
+
+    const postId = window.currentEditPostId;
+    if (!postId) return;
+
+    const title = document.getElementById('editTitle').value.trim();
+    const category = document.getElementById('editCategory').value.trim();
+    const content = document.getElementById('editContent').value.trim();
+
+    if (!title || !content) {
+        showMessage('标题和内容不能为空', 'error');
+        return;
+    }
+
+    const submitBtn = document.querySelector('#editForm button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '保存中...';
+
+    try {
+        const response = await fetch(`/api/post/${postId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                category: category
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.result) {
+            showMessage('文章更新成功', 'info');
+            closeEditModal();
+            loadUserPosts();  // 刷新文章列表
+        } else {
+            showMessage(data.msg || '更新失败', 'error');
+        }
+    } catch (error) {
+        console.error('更新失败:', error);
+        showMessage('网络错误，请稍后重试', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+}
+
+// 删除文章（全局函数）
+window.deletePostById = async function(postId, postTitle) {
+    if (!confirm(`确定要删除《${postTitle}》吗？此操作不可恢复。`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/post/${postId}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (data.result) {
+            showMessage('文章已删除', 'info');
+            loadUserPosts();  // 刷新文章列表
+        } else {
+            showMessage(data.msg || '删除失败', 'error');
+        }
+    } catch (error) {
+        console.error('删除失败:', error);
+        showMessage('网络错误，请稍后重试', 'error');
+    }
+};
+
+// 绑定编辑表单提交事件
+document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+        editForm.addEventListener('submit', saveEditPost);
+    }
+});
 
 // 首页初始化
 function initHomePage() {

@@ -121,9 +121,75 @@ def pub():
         return jsonify({"result":True, "msg":None, "blog_id": blog.id})
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET'])
 def profile():
     return render_template('profile.html')
+
+@app.route('/api/user/posts', methods=['GET'])
+def get_user_posts():
+    if 'user_id' not in session:
+        return jsonify({"result": False, "msg":"请先登录"})
+    posts = db.session.query(Blog).filter(Blog.publisher_id == session['user_id']).order_by(Blog.pub_date.desc()).all()
+    posts_list = []
+    for post in posts:
+        posts_list.append({
+            'id':post.id,
+            'title':post.title,
+            'content':post.content,
+            'pub_date':post.pub_date,
+            'category':post.category.name,
+        })
+    return jsonify({"result":True, "msg":None, "posts": posts_list})
+
+@app.route('/api/post/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    if 'user_id' not in session:
+        return jsonify({"result":False, "msg":"请先登录"})
+
+    post = db.session.get(Blog, post_id)
+    if not post:
+        return jsonify({"result":False, "msg":"文章不存在"})
+
+    return jsonify({
+        "result":True,
+        "post": {
+            "id": post.id,
+            "title": post.title,
+            "content": post.content,
+            "pub_date": post.pub_date.strftime('%Y-%m-%d'),
+            "category": post.category.name,
+        }
+    })
+
+
+@app.route('/api/post/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    if 'user_id' not in session:
+        return jsonify({"result":False, "msg":"请先登录"})
+
+    post = db.session.get(Blog, post_id)
+
+    data = request.get_json()
+    title = data.get('title')
+    content = data.get('content')
+    category_name = data.get('category')
+
+    post.title = title
+    post.content = content
+
+    db.session.commit()
+    return jsonify({"result":True, "msg":None})
+
+@app.route('/api/post/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    if 'user_id' not in session:
+        return jsonify({"result":False, "msg":"请先登录"})
+
+    post = db.session.get(Blog, post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return jsonify({"result":True, "msg":None})
+
 
 
 if __name__ == '__main__':

@@ -5,6 +5,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>墨金博客 · 个人主页</title>
     <link rel="stylesheet" href="/static/css/Blog_css.css">
+    <style>
+        /* 个人主页样式 */
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background-color: var(--darker-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            border: 1px solid var(--border-gray);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--gold);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .profile-bio {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .profile-tabs {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active-tab {
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .my-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .post-item {
+            background-color: var(--darker-bg);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-item:hover {
+            border-color: var(--gold);
+            transform: translateX(4px);
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .post-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background-color: var(--gold);
+            color: #1a1a1a;
+        }
+
+        .edit-btn:hover {
+            background-color: #e6b422;
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .delete-btn:hover {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .empty-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        /* 编辑模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--text-light);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .modal-form-group input,
+        .modal-form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            color: var(--text-light);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -32,65 +287,54 @@
                     <div class="profile-name">墨客 <span style="color: var(--gold);">· 博主</span></div>
                     <div class="profile-bio">设计 & 代码爱好者，专注深色界面与质感细节。墨金博客主理人。</div>
                     <div class="profile-stats">
-                        <div class="stat-item"><span class="stat-value">12</span> <span class="stat-label">文章</span></div>
-                        <div class="stat-item"><span class="stat-value">348</span> <span class="stat-label">订阅</span></div>
-                        <div class="stat-item"><span class="stat-value">6</span> <span class="stat-label">系列</span></div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="postCount">0</span>
+                            <span class="stat-label">文章</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 标签页 -->
             <div class="profile-tabs">
-                <button class="tab-btn active-tab" onclick="alert('我的文章')">我的文章</button>
-                <button class="tab-btn" onclick="alert('收藏夹')">收藏夹</button>
-                <button class="tab-btn" onclick="alert('设置')">设置</button>
+                <button class="tab-btn active-tab">我的文章</button>
             </div>
 
-            <!-- 文章列表 -->
-            <div class="my-posts">
-                <div class="post-item" onclick="viewPost('暗色主题的优雅')">
-                    <div class="post-info">
-                        <h4>暗色主题的优雅</h4>
-                        <span class="post-date">2025-03-12 · 设计哲学</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="edit-btn" onclick="editPost(event, '暗色主题的优雅')">✎ 编辑</button>
-                        <button class="delete-btn" onclick="deletePost(event, '暗色主题的优雅')">🗑️ 删除</button>
-                    </div>
-                </div>
-                <div class="post-item" onclick="viewPost('金色细节的力量')">
-                    <div class="post-info">
-                        <h4>金色细节的力量</h4>
-                        <span class="post-date">2025-03-05 · UI设计</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="edit-btn" onclick="editPost(event, '金色细节的力量')">✎ 编辑</button>
-                        <button class="delete-btn" onclick="deletePost(event, '金色细节的力量')">🗑️ 删除</button>
-                    </div>
-                </div>
-                <div class="post-item" onclick="viewPost('博客重构笔记')">
-                    <div class="post-info">
-                        <h4>博客重构笔记</h4>
-                        <span class="post-date">2025-02-28 · 开发</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="edit-btn" onclick="editPost(event, '博客重构笔记')">✎ 编辑</button>
-                        <button class="delete-btn" onclick="deletePost(event, '博客重构笔记')">🗑️ 删除</button>
-                    </div>
-                </div>
-                <div class="post-item" onclick="viewPost('深色模式设计指南')">
-                    <div class="post-info">
-                        <h4>深色模式设计指南</h4>
-                        <span class="post-date">2025-02-20 · 设计</span>
-                    </div>
-                    <div class="post-actions">
-                        <button class="edit-btn" onclick="editPost(event, '深色模式设计指南')">✎ 编辑</button>
-                        <button class="delete-btn" onclick="deletePost(event, '深色模式设计指南')">🗑️ 删除</button>
-                    </div>
-                </div>
+           <!-- 文章列表容器 -->
+            <div id="postsContainer">
+                <div class="loading">加载中...</div>
             </div>
         </div>
     </main>
+
+    <!-- 编辑文章模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑文章</h3>
+                <button class="close-modal" onclick="closeEditModal()">✕</button>
+            </div>
+            <form id="editForm">
+                <div class="modal-form-group">
+                    <label>标题 *</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="modal-form-group">
+                    <label>分类</label>
+                    <input type="text" id="editCategory" placeholder="设计 / 技术 / 思考">
+                </div>
+                <div class="modal-form-group">
+                    <label>正文 *</label>
+                    <textarea id="editContent" rows="10" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="delete-btn" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="edit-btn">保存修改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <footer class="footer">
         <div class="container">
