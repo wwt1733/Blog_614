@@ -611,6 +611,117 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 首页初始化
+let currentPage = 1;
+let totalPages = 1;
+let isLoading = false;
+
 function initHomePage() {
-    // 首页的特定初始化逻辑
+    currentPage = 1;
+    loadPosts();
 }
+
+// 加载文章列表
+async function loadPosts(append = false) {
+    if (isLoading) return;
+
+    isLoading = true;
+    const postsGrid = document.getElementById('postsGrid');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+
+    if (!append) {
+        postsGrid.innerHTML = '<div class="loading-spinner">加载中</div>';
+    }
+
+    try {
+        const response = await fetch(`/api/posts?page=${currentPage}&per_page=6`);
+        const data = await response.json();
+
+        if (!data.result) {
+            postsGrid.innerHTML = `<div class="empty-posts">${data.msg || '加载失败'}</div>`;
+            return;
+        }
+
+        const posts = data.posts;
+        totalPages = data.pages;
+
+        if (posts.length === 0 && !append) {
+            postsGrid.innerHTML = `
+                <div class="empty-posts">
+                    <p>还没有文章</p>
+                    <a href="/pub">发布第一篇</a>
+                </div>
+            `;
+            loadMoreContainer.style.display = 'none';
+            return;
+        }
+
+        // 渲染文章卡片
+        const postsHtml = posts.map(post => `
+            <div class="post-card" onclick="viewPostDetail(${post.id})">
+                <div class="post-image">${getPostIcon(post.picture)}</div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span>${escapeHtml(post.category)}</span>
+                        <span>${post.pub_date}</span>
+                    </div>
+                    <h3>${escapeHtml(post.title)}</h3>
+                    <p>${escapeHtml(post.content)}</p>
+                    <span class="read-more">阅读全文 →</span>
+                </div>
+            </div>
+        `).join('');
+
+        if (append) {
+            postsGrid.insertAdjacentHTML('beforeend', postsHtml);
+        } else {
+            postsGrid.innerHTML = postsHtml;
+        }
+
+        // 控制加载更多按钮显示
+        if (currentPage < totalPages) {
+            loadMoreContainer.style.display = 'block';
+        } else {
+            loadMoreContainer.style.display = 'none';
+        }
+
+    } catch (error) {
+        console.error('加载文章失败:', error);
+        postsGrid.innerHTML = '<div class="empty-posts">加载失败，请刷新页面重试</div>';
+    } finally {
+        isLoading = false;
+    }
+}
+
+// 获取文章图标
+function getPostIcon(picture) {
+    // 如果 picture 是 URL，显示图片缩略图
+    if (picture && (picture.startsWith('http://') || picture.startsWith('https://'))) {
+        return `<img src="${picture}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+    }
+    // 否则返回默认图标
+    const icons = ['📘', '✨', '✍️', '🎨', '💡', '🚀', '⚡', '🌟'];
+    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+    return `<span style="font-size: 3rem;">${randomIcon}</span>`;
+}
+
+// 查看文章详情（全局函数）
+window.viewPostDetail = function(postId) {
+    window.location.href = `/post/${postId}`;
+};
+
+// 加载更多
+function loadMorePosts() {
+    if (currentPage < totalPages && !isLoading) {
+        currentPage++;
+        loadPosts(true);
+    }
+}
+
+// 绑定加载更多按钮事件
+document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', loadMorePosts);
+    }
+});
+

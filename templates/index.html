@@ -5,6 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>墨金博客 · 首页</title>
     <link rel="stylesheet" href="/static/css/Blog_css.css">
+    <style>
+        /* 首页额外样式 */
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner::after {
+            content: "✧";
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-posts a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .empty-posts a:hover {
+            text-decoration: underline;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .load-more-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-light);
+            padding: 10px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .load-more-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .load-more-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -42,34 +102,13 @@
 
         <!-- 精选文章 -->
         <h2 class="section-title">精选文章</h2>
-        <div class="featured-grid">
-            <div class="post-card" onclick="viewPost('暗色主题的优雅')">
-                <div class="post-image">📘</div>
-                <div class="post-content">
-                    <div class="post-meta"><span>设计哲学</span><span>5分钟</span></div>
-                    <h3>暗色主题的优雅</h3>
-                    <p>探讨深色界面如何提升沉浸感，结合金色细节点缀，营造高级感……</p>
-                    <span class="read-more">阅读全文 →</span>
-                </div>
-            </div>
-            <div class="post-card" onclick="viewPost('金色细节的力量')">
-                <div class="post-image">✨</div>
-                <div class="post-content">
-                    <div class="post-meta"><span>UI 设计</span><span>4分钟</span></div>
-                    <h3>金色细节的力量</h3>
-                    <p>克制地使用金色作为强调色，如何在深色背景中脱颖而出又不显浮夸……</p>
-                    <span class="read-more">阅读全文 →</span>
-                </div>
-            </div>
-            <div class="post-card" onclick="viewPost('博客重构笔记')">
-                <div class="post-image">✍️</div>
-                <div class="post-content">
-                    <div class="post-meta"><span>开发</span><span>6分钟</span></div>
-                    <h3>博客重构笔记</h3>
-                    <p>从零搭建一个深灰与金的博客系统，记录设计思路与交互细节……</p>
-                    <span class="read-more">阅读全文 →</span>
-                </div>
-            </div>
+        <div id="postsGrid" class="featured-grid">
+           <div class="loading-spinner">加载中</div>
+        </div>
+
+        <!-- 加载更多按钮 -->
+        <div id="loadMoreContainer" class="load-more" style="display: none;">
+            <button id="loadMoreBtn" class="load-more-btn">加载更多</button>
         </div>
     </main>
 

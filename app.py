@@ -191,6 +191,33 @@ def delete_post(post_id):
     return jsonify({"result":True, "msg":None})
 
 
+@app.route('/api/posts', methods=['GET'])
+def get_all_posts():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    pagination = db.session.query(Blog).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+    posts_list = []
+    for post in pagination.items:
+        posts_list.append({
+            'id':post.id,
+            'title':post.title,
+            'content':post.content,
+            'pub_date':post.pub_date.strftime('%Y-%m-%d'),
+            'category':post.category.name,
+            'picture':post.picture or '📘'
+        })
+
+    return jsonify({
+        "result":True,
+        "msg":None,
+        "posts": posts_list,
+        "total" :pagination.total,
+        "page":page,
+        "pages":pagination.pages,
+    })
+
 
 if __name__ == '__main__':
     app.run()
