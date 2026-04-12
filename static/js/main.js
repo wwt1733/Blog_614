@@ -52,7 +52,9 @@ window.handleSaveDraft = function() {
     }
 };
 
-window.viewPost = viewPost;
+window.viewPost = function (postId){
+    window.location.href = '/post/&{postId}';
+};
 window.editPost = handleEditPost;
 window.deletePost = handleDeletePost;
 window.addTag = addTag;

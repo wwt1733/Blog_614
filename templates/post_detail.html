@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨金博客 · 文章详情</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+    <style>
+        /* 文章详情页样式 */
+        .article-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .article-card {
+            background-color: var(--darker-bg);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .article-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-gray);
+            padding-bottom: 20px;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .article-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .article-category {
+            background-color: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 40px;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5em;
+        }
+
+        .article-content h2,
+        .article-content h3 {
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .article-content blockquote {
+            border-left: 3px solid var(--gold);
+            padding-left: 20px;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .article-content code {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .article-content pre {
+            background-color: #1a1a1a;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .article-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .article-footer {
+            border-top: 1px solid var(--border-gray);
+            padding-top: 30px;
+            margin-top: 20px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--gold);
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-details {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .author-bio {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn.edit {
+            background-color: var(--gold);
+            color: #1a1a1a;
+        }
+
+        .action-btn.edit:hover {
+            background-color: #e6b422;
+        }
+
+        .action-btn.delete {
+            background-color: transparent;
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .action-btn.back {
+            background-color: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-light);
+        }
+
+        .action-btn.back:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .error-container h2 {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .error-container p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .article-card {
+                padding: 20px;
+            }
+
+            .article-title {
+                font-size: 1.8rem;
+            }
+
+            .article-content {
+                font-size: 1rem;
+            }
+        }
+
+        /* 加载动画 */
+        .loading-article {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .loading-article::after {
+            content: "✧";
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="/index">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="/index" id="nav-home">首页</a>
+                <a href="/pub" id="nav-publish">发布</a>
+                <a href="/profile" id="nav-profile">个人主页</a>
+                <a href="/login" id="nav-login">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay" style="display: none;">
+                <span>👤</span> 加载中...
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div id="articleContainer" class="article-container">
+            <div class="loading-article">加载文章</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { showMessage } from '/static/js/modules/ui.js';
+        import { getCurrentUser } from '/static/js/modules/auth.js';
+
+        // 获取文章ID
+        const postId = window.location.pathname.split('/').pop();
+
+        // 加载文章详情
+        async function loadArticle() {
+            const container = document.getElementById('articleContainer');
+
+            try {
+                const response = await fetch(`/api/post/${postId}`);
+                const data = await response.json();
+
+                if (!data.result) {
+                    container.innerHTML = `
+                        <div class="error-container">
+                            <h2>❌ ${data.msg || '文章不存在'}</h2>
+                            <p>请检查链接是否正确，或返回首页浏览其他文章。</p>
+                            <button class="btn btn-gold" onclick="window.location.href='/index'">返回首页</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const post = data.post;
+                const currentUser = await getCurrentUser();
+                const isAuthor = currentUser.is_logged_in && currentUser.user.id === post.publisher_id;
+
+                // 渲染文章
+                container.innerHTML = `
+                    <div class="article-card">
+                        <div class="article-header">
+                            <h1 class="article-title">${escapeHtml(post.title)}</h1>
+                            <div class="article-meta">
+                                <div class="article-meta-item">
+                                    <span>📅</span>
+                                    <span>${post.pub_date}</span>
+                                </div>
+                                ${post.category ? `
+                                <div class="article-meta-item">
+                                    <span>🏷️</span>
+                                    <span class="article-category">${escapeHtml(post.category)}</span>
+                                </div>
+                                ` : ''}
+                                <div class="article-meta-item">
+                                    <span>👤</span>
+                                    <span>${escapeHtml(post.author_name || '墨客')}</span>
+                                </div>
+                                <div class="article-meta-item">
+                                    <span>📖</span>
+                                    <span>${estimateReadTime(post.content)}分钟阅读</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${post.picture ? `
+                        <div class="article-cover">
+                            <img src="${post.picture}" alt="封面图" style="width: 100%; border-radius: 12px; margin-bottom: 30px;">
+                        </div>
+                        ` : ''}
+
+                        <div class="article-content">
+                            ${formatContent(post.content)}
+                        </div>
+
+                        <div class="article-footer">
+                            <div class="author-info">
+                                <div class="author-avatar">
+                                    ${post.author_avatar ? `<img src="${post.author_avatar}" alt="头像">` : '✧'}
+                                </div>
+                                <div class="author-details">
+                                    <div class="author-name">${escapeHtml(post.author_name || '墨客')}</div>
+                                    <div class="author-bio">热爱分享，持续创作</div>
+                                </div>
+                            </div>
+
+                            <div class="article-actions">
+                                <button class="action-btn back" onclick="window.location.href='/index'">← 返回首页</button>
+                                ${isAuthor ? `
+                                    <button class="action-btn edit" onclick="editArticle(${post.id})">✎ 编辑文章</button>
+                                    <button class="action-btn delete" onclick="deleteArticle(${post.id}, '${escapeHtml(post.title)}')">🗑️ 删除文章</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('加载文章失败:', error);
+                container.innerHTML = `
+                    <div class="error-container">
+                        <h2>❌ 加载失败</h2>
+                        <p>网络错误，请稍后重试。</p>
+                        <button class="btn btn-gold" onclick="window.location.href='/index'">返回首页</button>
+                    </div>
+                `;
+            }
+        }
+
+        // 估算阅读时间
+        function estimateReadTime(content) {
+            const wordsPerMinute = 200;
+            const words = content.replace(/<[^>]*>/g, '').length;
+            const minutes = Math.ceil(words / wordsPerMinute);
+            return minutes || 1;
+        }
+
+        // 格式化内容（简单的 Markdown 支持）
+        function formatContent(content) {
+            if (!content) return '';
+
+            let formatted = content;
+
+            // 转义 HTML 特殊字符
+            formatted = escapeHtml(formatted);
+
+            // 处理换行
+            formatted = formatted.replace(/\n/g, '<br>');
+
+            // 处理标题（简单的 Markdown 支持）
+            formatted = formatted.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            formatted = formatted.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+            formatted = formatted.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+            // 处理粗体
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+            // 处理斜体
+            formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            formatted = formatted.replace(/_(.*?)_/g, '<em>$1</em>');
+
+            // 处理链接
+            formatted = formatted.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color: var(--gold);">$1</a>');
+
+            // 处理代码块
+            formatted = formatted.replace(/```(.*?)```/gs, '<pre><code>$1</code></pre>');
+            formatted = formatted.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // 处理引用
+            formatted = formatted.replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>');
+
+            return formatted;
+        }
+
+        // HTML 转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 编辑文章
+        window.editArticle = function(postId) {
+            window.location.href = `/edit/${postId}`;
+        };
+
+        // 删除文章
+        window.deleteArticle = async function(postId, postTitle) {
+            if (!confirm(`确定要删除《${postTitle}》吗？此操作不可恢复。`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/post/${postId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.result) {
+                    showMessage('文章已删除', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/index';
+                    }, 1500);
+                } else {
+                    showMessage(data.msg || '删除失败', 'error');
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+                showMessage('网络错误，请稍后重试', 'error');
+            }
+        };
+
+        // 页面加载
+        loadArticle();
+    </script>
+</body>
+</html>

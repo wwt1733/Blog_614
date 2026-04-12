@@ -1,5 +1,4 @@
 from flask import Flask, request, redirect, url_for, render_template, jsonify, session
-from unicodedata import category
 
 import config
 from exts import db,migrate
@@ -150,6 +149,9 @@ def get_post(post_id):
     if not post:
         return jsonify({"result":False, "msg":"文章不存在"})
 
+    author = db.session.get(User, post.publisher_id)
+
+
     return jsonify({
         "result":True,
         "post": {
@@ -158,6 +160,8 @@ def get_post(post_id):
             "content": post.content,
             "pub_date": post.pub_date.strftime('%Y-%m-%d'),
             "category": post.category.name,
+            "author_name": author.username if author else "匿名用户",
+            "author_avatar": author.avatar if author else None
         }
     })
 
@@ -217,6 +221,11 @@ def get_all_posts():
         "page":page,
         "pages":pagination.pages,
     })
+
+
+@app.route('/post/<int:post_id>')
+def post_detail(post_id):
+    return render_template('post_detail.html')
 
 
 if __name__ == '__main__':
