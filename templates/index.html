@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>墨金博客 · 首页</title>
-    <link rel="stylesheet" href="/static/css/Blog_css.css">
+{% extends "base.html" %}
+
+{% block title %}墨金博客 · 首页{% endblock %}
+
+{% block head %}
     <style>
         /* 首页额外样式 */
         .loading-spinner {
@@ -65,25 +63,10 @@
             cursor: not-allowed;
         }
     </style>
-</head>
-<body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo"><a href="/index">墨金·博</a></div>
-            <div class="nav-links">
-                <a href="/index" id="nav-home" class="active">首页</a>
-                <a href="/pub" id="nav-publish">发布</a>
-                <a href="/profile" id="nav-profile">个人主页</a>
-                <a href="/login" id="nav-login">登录</a>
-            </div>
-            <div class="user-tag" id="userDisplay" style="display: none;">
-                <span>👤</span> 加载中...
-            </div>
-        </div>
-    </nav>
+{% endblock %}
 
-    <main class="container">
+{% block content %}
+    <div class="container">
         <!-- Hero 大横幅 -->
         <div class="hero">
             <div class="hero-content">
@@ -103,21 +86,12 @@
         <!-- 精选文章 -->
         <h2 class="section-title">精选文章</h2>
         <div id="postsGrid" class="featured-grid">
-           <div class="loading-spinner">加载中</div>
+            <div class="loading-spinner">加载中</div>
         </div>
 
         <!-- 加载更多按钮 -->
         <div id="loadMoreContainer" class="load-more" style="display: none;">
             <button id="loadMoreBtn" class="load-more-btn">加载更多</button>
         </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
-        </div>
-    </footer>
-
-    <script type="module" src="/static/js/main.js"></script>
-</body>
-</html>
+    </div>
+{% endblock %}

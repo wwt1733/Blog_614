@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>墨金博客 · 发布文章</title>
-    <link rel="stylesheet" href="/static/css/Blog_css.css">
+{% extends "base.html" %}
+
+{% block title %}墨金博客 · 发布文章{% endblock %}
+
+{% block head %}
     <style>
         /* 发布页额外样式 */
         .form-group {
@@ -97,81 +95,50 @@
             display: block;
         }
     </style>
-</head>
-<body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo"><a href="/index">墨金·博</a></div>
-            <div class="nav-links">
-                <a href="/index" id="nav-home">首页</a>
-                <a href="/pub" id="nav-publish" class="active">发布</a>
-                <a href="/profile" id="nav-profile">个人主页</a>
-                <a href="/login" id="nav-login">登录</a>
-            </div>
-            <div class="user-tag" id="userDisplay" style="display: none;">
-                <span>👤</span> 访客
-            </div>
-        </div>
-    </nav>
+{% endblock %}
 
-    <main>
-        <div class="publish-container">
-            <div class="publish-card">
-                <h2>发布新文章</h2>
-                <div class="login-sub">分享你的思考和见解</div>
+{% block content %}
+    <div class="publish-container">
+        <div class="publish-card">
+            <h2>发布新文章</h2>
+            <div class="login-sub">分享你的思考和见解</div>
 
-                <form id="publishForm">
-                    <!-- 标题 -->
+            <form id="publishForm">
+                <div class="form-group">
+                    <label>标题 *</label>
+                    <input type="text" id="title" placeholder="给你的文章起个名字" autocomplete="off">
+                    <div class="error-message" id="titleError"></div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
-                        <label>标题 *</label>
-                        <input type="text" id="title" placeholder="给你的文章起个名字" autocomplete="off">
-                        <div class="error-message" id="titleError"></div>
+                        <label>分类 *</label>
+                        <input type="text" id="category" placeholder="设计 / 技术 / 思考" autocomplete="off">
+                        <div class="error-message" id="categoryError"></div>
                     </div>
 
-                    <div class="form-row">
-                        <!-- 分类 -->
-                        <div class="form-group">
-                            <label>分类 *</label>
-                            <input type="text" id="category" placeholder="设计 / 技术 / 思考" autocomplete="off">
-                            <div class="error-message" id="categoryError"></div>
-                        </div>
-
-                        <!-- 封面图 (URL) -->
-                        <div class="form-group">
-                            <label>封面图 (URL)</label>
-                            <input type="text" id="picture" placeholder="可选，输入图片链接">
-                            <div class="error-message" id="pictureError"></div>
-                        </div>
-                    </div>
-
-                    <!-- 正文 -->
                     <div class="form-group">
-                        <label>正文 *</label>
-                        <textarea rows="12" id="content" placeholder="写点东西吧……" style="resize: vertical;"></textarea>
-                        <div class="error-message" id="contentError"></div>
+                        <label>封面图 (URL)</label>
+                        <input type="text" id="picture" placeholder="可选，输入图片链接">
+                        <div class="error-message" id="pictureError"></div>
                     </div>
+                </div>
 
-                    <!-- 提示信息 -->
-                    <div class="success-message" id="successMessage">
-                        ✓ 发布成功！正在跳转...
-                    </div>
+                <div class="form-group">
+                    <label>正文 *</label>
+                    <textarea rows="12" id="content" placeholder="写点东西吧……" style="resize: vertical;"></textarea>
+                    <div class="error-message" id="contentError"></div>
+                </div>
 
-                    <div class="publish-actions">
-                        <button type="button" class="btn btn-outline" id="saveDraftBtn">保存草稿</button>
-                        <button type="submit" class="btn btn-gold">发布文章</button>
-                    </div>
-                </form>
-            </div>
+                <div class="success-message" id="successMessage">
+                    ✓ 发布成功！正在跳转...
+                </div>
+
+                <div class="publish-actions">
+                    <button type="button" class="btn btn-outline" id="saveDraftBtn">保存草稿</button>
+                    <button type="submit" class="btn btn-gold">发布文章</button>
+                </div>
+            </form>
         </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
-        </div>
-    </footer>
-
-    <script type="module" src="/static/js/main.js"></script>
-</body>
-</html>
+    </div>
+{% endblock %}

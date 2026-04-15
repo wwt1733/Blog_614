@@ -1,105 +1,28 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>墨金博客 · 登录</title>
-    <link rel="stylesheet" href="/static/css/Blog_css.css">
-</head>
-<body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <div class="logo"><a href="/index">墨金·博</a></div>
-            <div class="nav-links">
-                <a href="/index" id="nav-home">首页</a>
-                <a href="/pub" id="nav-publish">发布</a>
-                <a href="/profile" id="nav-profile">个人主页</a>
-                <a href="/login" id="nav-login" class="active">登录</a>
-            </div>
-            <div class="user-tag" id="userDisplay" style="display: none;">
-                <span>👤</span> 访客
-            </div>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <main>
-        <div class="login-container">
-            <div class="login-card">
-                <h2>登录墨金</h2>
-                <div class="login-sub">使用你的账号继续</div>
-                <div class="input-group">
-                    <input type="text" placeholder="用户名 / 邮箱" id="username">
-                </div>
-                <div class="input-group">
-                    <input type="password" placeholder="密码" id="password">
-                </div>
-                <div class="login-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" checked> 记住我
-                    </label>
-                    <a href="#" class="forgot-link">忘记密码?</a>
-                </div>
-                <button class="btn login-btn" onclick="handleLogin()">进入博客</button>
-                <div class="register-link">
-                    还没有账号？ <a href="/register">立即注册</a>
-                </div>
+{% block title %}墨金博客 · 登录{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <div class="login-card">
+            <h2>登录墨金</h2>
+            <div class="login-sub">使用你的账号继续</div>
+            <div class="input-group">
+                <input type="text" placeholder="用户名 / 邮箱" id="username">
+            </div>
+            <div class="input-group">
+                <input type="password" placeholder="密码" id="password">
+            </div>
+            <div class="login-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" checked> 记住我
+                </label>
+                <a href="#" class="forgot-link">忘记密码?</a>
+            </div>
+            <button class="btn login-btn" onclick="handleLogin()">进入博客</button>
+            <div class="register-link">
+                还没有账号？ <a href="/register">立即注册</a>
             </div>
         </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
-        </div>
-    </footer>
-
-    <script type="module" src="/static/js/main.js"></script>
-    <script>
-    // 检查是否从注册页跳转过来
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('registered') === 'true') {
-        alert('注册成功！请使用你的账号登录');
-    }
-
-    // 登录函数 - 调用后端API
-    async function handleLogin() {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-        const remember = document.querySelector('input[type="checkbox"]').checked;
-
-        if (!username || !password) {
-            alert('请输入用户名和密码');
-            return;
-        }
-
-        try {
-            const formData = new URLSearchParams();
-            formData.append('username', username);
-            formData.append('password', password);
-            formData.append('remember', remember);
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formData
-            });
-
-        const data = await response.json();
-
-        if (data.result) {
-            alert(`欢迎回来，${data.user.username}！`);
-            window.location.href = '/index';  // 跳转到首页
-        } else {
-            alert(data.msg || '登录失败，请检查用户名和密码');
-        }
-        } catch (error) {
-        console.error('登录失败:', error);
-        alert('网络错误，请稍后重试');
-        }
-    }
-    </script>
-</body>
-</html>
+    </div>
+{% endblock %}

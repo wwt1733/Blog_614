@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}墨金博客{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/Blog_css.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><a href="/index">墨金·博</a></div>
+            <div class="nav-links">
+                <a href="/index" id="nav-home">首页</a>
+                <a href="/pub" id="nav-publish">发布</a>
+                <a href="/profile" id="nav-profile">个人主页</a>
+                <a href="/login" id="nav-login">登录</a>
+            </div>
+            <div class="user-tag" id="userDisplay" style="display: none;">
+                <span>👤</span> 加载中...
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>墨金博客 · 简洁 · 深邃 · 质感</p>
+        </div>
+    </footer>
+
+    <script type="module" src="/static/js/main.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
